@@ -11,14 +11,45 @@ window.addEventListener('load', function imageColorAverage(){
     console.log('function is running');
     ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
     console.log('canvas loaded');
+    //getting image data 
     const scannedImage = ctx.getImageData(0,0, canvas.width, canvas.height).data;
-    console.log(scannedImage);
+    //separating r,g,b, and a
+    //creating empty arrays for each color so i can use for loop to push into them
+    var Red = [];
+    var Green =[];
+    var Blue = [];
+    var Alpha = [];
 
-    let sum = 0;
-    for(var i = 0; i < scannedImage.length; i++){
-        let currentNum = scannedImage[i];
-        sum += currentNum;
+    for(var i = 0; i < scannedImage.length; i+=4){
+        Red.push(scannedImage[i+0]);
+        Green.push(scannedImage[i+1]);
+        Blue.push(scannedImage[i+2]);
+        Alpha.push(scannedImage[i+3]);
     }
-    const answer = sum/scannedImage.length;
-    console.log(answer);
+// Color Averages
+const redAverage = average(Red);
+const greenAverage = average(Green);
+const blueAverage = average(Blue);
+const alphaAverage = average(Alpha);
+// Color Average Array
+var colorBlend = [];
+colorBlend.push(redAverage);
+colorBlend.push(greenAverage);
+colorBlend.push(blueAverage);
+colorBlend.push(alphaAverage);
+//Setting nextCanvas
+const nextCanvas = document.getElementById('nextCanvas');
+const nCtx = nextCanvas.getContext('2d');
+const style = `rgba(${redAverage},${greenAverage},${blueAverage},${alphaAverage})`
+nCtx.fillStyle = style
+nCtx.fillRect(0, 0 , canvas.width, canvas.height);
+//average function
+function average(input){
+    var total = 0;
+    for (var i = 0; i < input.length; i++){
+        total += input[i]
+    };
+    var avg = total/input.length;
+    return avg;
+}
 });
